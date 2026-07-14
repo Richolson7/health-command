@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Command — 280 to 220</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A1120;
+    --panel: #111B2E;
+    --panel-2: #16223B;
+    --line: #22314F;
+    --gold: #C9A227;
+    --green: #3FA35A;
+    --amber: #E0A63C;
+    --red: #DD5252;
+    --blue: #4C86C9;
+    --text: #EDEFF3;
+    --muted: #8B96AC;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background: radial-gradient(1200px 800px at 80% -10%, #142140 0%, var(--bg) 55%);
+    color: var(--text);
+    font-family: var(--body);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom: 90px;
+  }
+  .wrap{ max-width: 760px; margin:0 auto; padding: 22px 18px 0; }
+
+  /* header */
+  header{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:18px; }
+  .eyebrow{ font-family: var(--mono); font-size:11px; letter-spacing:.14em; color: var(--gold); text-transform:uppercase; }
+  h1{ font-family: var(--display); font-size: 26px; font-weight:700; margin-top:4px; }
+  .goal-chip{ font-family: var(--mono); font-size:12px; color: var(--muted); text-align:right; }
+  .goal-chip b{ color: var(--text); }
+
+  /* tabs */
+  .tabs{ position:fixed; bottom:0; left:0; right:0; background: rgba(10,17,32,.92); backdrop-filter: blur(10px); border-top:1px solid var(--line); display:flex; z-index:50; }
+  .tab{ flex:1; text-align:center; padding:12px 4px 10px; font-family: var(--mono); font-size:11px; letter-spacing:.04em; color: var(--muted); cursor:pointer; border-top:2px solid transparent; }
+  .tab.active{ color: var(--gold); border-top-color: var(--gold); }
+  .tab .ico{ display:block; font-size:17px; margin-bottom:2px; }
+
+  .view{ display:none; animation: fade .25s ease; }
+  .view.active{ display:block; }
+  @keyframes fade{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
+
+  /* cards */
+  .card{ background: linear-gradient(180deg, var(--panel), var(--panel-2)); border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:14px; }
+  .card-title{ font-family: var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color: var(--muted); margin-bottom:10px; }
+
+  /* stat row */
+  .stat-row{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-bottom:14px; }
+  .stat{ background: var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px 10px; text-align:center; }
+  .stat .num{ font-family: var(--display); font-size:22px; font-weight:700; }
+  .stat .lbl{ font-family: var(--mono); font-size:10px; color: var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-top:2px; }
+  .stat.range-green .num{ color: var(--green); }
+  .stat.range-amber .num{ color: var(--amber); }
+  .stat.range-red .num{ color: var(--red); }
+
+  /* glucose ribbon */
+  .ribbon-wrap{ position:relative; height:120px; }
+  svg{ width:100%; height:100%; overflow:visible; }
+  .ribbon-legend{ display:flex; gap:14px; margin-top:8px; font-family: var(--mono); font-size:10px; color: var(--muted); flex-wrap:wrap; }
+  .ribbon-legend span{ display:inline-flex; align-items:center; gap:5px; }
+  .dot{ width:8px; height:8px; border-radius:50%; display:inline-block; }
+
+  /* forms */
+  label{ display:block; font-family: var(--mono); font-size:11px; color: var(--muted); margin-bottom:5px; text-transform:uppercase; letter-spacing:.05em; }
+  input, select{
+    width:100%; background: var(--bg); border:1px solid var(--line); color: var(--text);
+    padding:10px 12px; border-radius:9px; font-family: var(--body); font-size:14px; margin-bottom:12px;
+  }
+  input:focus, select:focus{ outline:none; border-color: var(--gold); }
+  .row2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .row3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+  button{
+    font-family: var(--display); font-weight:600; font-size:14px; letter-spacing:.02em;
+    background: var(--gold); color:#1A1406; border:none; padding:11px 16px; border-radius:9px; cursor:pointer; width:100%;
+  }
+  button:active{ transform: scale(.98); }
+  button.ghost{ background:transparent; border:1px solid var(--line); color: var(--text); }
+  button.small{ padding:8px 12px; font-size:12px; width:auto; }
+
+  /* food library */
+  .filter-row{ display:flex; gap:8px; overflow-x:auto; margin-bottom:12px; padding-bottom:2px; }
+  .filter-chip{ font-family: var(--mono); font-size:11px; padding:7px 12px; border-radius:20px; border:1px solid var(--line); color: var(--muted); white-space:nowrap; cursor:pointer; }
+  .filter-chip.active{ background: var(--gold); color:#1A1406; border-color:var(--gold); }
+  .food-item{ padding:12px 0; border-bottom:1px solid var(--line); }
+  .food-item:last-child{ border-bottom:none; }
+  .food-name{ font-weight:600; font-size:14px; }
+  .food-tip{ font-size:12px; color: var(--muted); margin-top:2px; }
+  .food-macros{ font-family: var(--mono); font-size:11px; color: var(--muted); margin-top:3px; }
+  .tag{ width:9px; height:9px; border-radius:50%; display:inline-block; margin-right:7px; flex-shrink:0; margin-top:5px; }
+  .tag-green{ background: var(--green); } .tag-yellow{ background: var(--amber); } .tag-red{ background: var(--red); }
+  .food-left{ display:flex; align-items:flex-start; }
+  .portion-row{ display:flex; gap:6px; margin-top:9px; margin-left:16px; flex-wrap:wrap; }
+  .portion-btn{ font-family: var(--mono); font-size:11px; padding:6px 10px; border-radius:7px; border:1px solid var(--line); background: var(--bg); color: var(--text); cursor:pointer; }
+  .portion-btn:active{ background: var(--gold); color:#1A1406; border-color:var(--gold); }
+  .portion-flash{ background: var(--green) !important; color:#0A1120 !important; border-color: var(--green) !important; }
+
+  /* log list */
+  .log-entry{ display:flex; justify-content:space-between; align-items:center; padding:11px 0; border-bottom:1px solid var(--line); font-size:13px; }
+  .log-entry:last-child{ border-bottom:none; }
+  .log-time{ font-family: var(--mono); color: var(--muted); font-size:11px; width:52px; flex-shrink:0; }
+  .log-mid{ flex:1; }
+  .log-val{ font-family: var(--mono); font-weight:600; }
+  .empty{ text-align:center; padding:24px 10px; color: var(--muted); font-size:13px; }
+  .empty .big{ font-size:26px; display:block; margin-bottom:6px; }
+
+  .callout{ background: rgba(201,162,39,.08); border:1px solid rgba(201,162,39,.35); border-radius:10px; padding:12px 14px; font-size:13px; line-height:1.5; margin-bottom:10px; }
+  .callout b{ color: var(--gold); }
+  .disclaimer{ font-size:11.5px; color: var(--muted); line-height:1.5; border-top:1px solid var(--line); padding-top:12px; margin-top:6px; }
+
+  .filter-row::-webkit-scrollbar{ height:6px; }
+  .filter-row::-webkit-scrollbar-track{ background: transparent; }
+  .filter-row::-webkit-scrollbar-thumb{ background: var(--line); border-radius:3px; }
+  .filter-row::-webkit-scrollbar-thumb:hover{ background: var(--gold); }
+  .filter-row{ scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+
+  .estimate-btn{ width:100%; text-align:left; background: var(--bg); border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin-bottom:8px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; }
+  .estimate-btn:active{ border-color: var(--gold); }
+  .estimate-left .name{ font-weight:600; font-size:13px; }
+  .estimate-left .sub{ font-size:11px; color: var(--muted); margin-top:1px; }
+  .estimate-cal{ font-family: var(--mono); font-size:13px; color: var(--gold); flex-shrink:0; padding-left:10px; }
+  .fav-chip{ display:inline-flex; align-items:center; gap:6px; font-family: var(--mono); font-size:11px; padding:7px 11px; border-radius:20px; border:1px solid var(--gold); color: var(--gold); cursor:pointer; margin:0 6px 6px 0; }
+  .fav-label{ font-family: var(--mono); font-size:10px; color: var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
+  .checkbox-row{ display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+  .checkbox-row input{ width:auto; margin:0; }
+  .checkbox-row label{ margin:0; text-transform:none; letter-spacing:0; font-size:13px; color: var(--text); }
+
+  .quickbar{
+    position: sticky; top:0; z-index:40;
+    display:flex; gap:8px;
+    padding:10px 0 12px;
+    margin-bottom:14px;
+    background: linear-gradient(180deg, var(--bg) 82%, transparent);
+  }
+  .qb-btn{
+    flex:1; font-family: var(--display); font-weight:600; font-size:13px;
+    background: var(--gold); color:#1A1406; border:none; border-radius:9px; padding:11px 8px; cursor:pointer;
+  }
+  .qb-btn:active{ transform: scale(.97); }
+  #quickFormWrap{ margin-bottom: 14px; }
+  #quickFormWrap:empty{ margin-bottom:0; }
+  #quickFormWrap .card{ margin-bottom:0; }
+
+  .modal-overlay{
+    position: fixed; inset:0; background: rgba(6,10,20,.78); backdrop-filter: blur(3px);
+    display:flex; align-items:flex-end; justify-content:center; z-index:100;
+  }
+  .modal-card{
+    background: linear-gradient(180deg, var(--panel), var(--panel-2)); border:1px solid var(--line);
+    border-radius:18px 18px 0 0; padding:20px 18px 24px; width:100%; max-width:760px; max-height:88vh; overflow-y:auto;
+  }
+  .modal-title{ font-family: var(--display); font-size:20px; font-weight:700; margin-bottom:4px; }
+  .modal-sub{ font-size:13px; color: var(--muted); margin-bottom:16px; }
+  .week-summary{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px; margin-bottom:18px; }
+  .week-summary .stat{ padding:10px 6px; }
+  .week-summary .num{ font-size:18px; }
+  .choice-row{ display:flex; gap:8px; margin-bottom:16px; }
+  .choice-btn{ flex:1; font-family: var(--body); font-size:13px; padding:12px 6px; border-radius:10px; border:1px solid var(--line); background: var(--bg); color: var(--text); cursor:pointer; text-align:center; }
+  .choice-btn.selected{ border-color: var(--gold); background: rgba(201,162,39,.14); color: var(--gold); font-weight:600; }
+  .checkin-history{ margin-top:4px; }
+  .checkin-row{ display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px solid var(--line); font-size:12.5px; }
+  .checkin-row:last-child{ border-bottom:none; }
+  .checkin-row .date{ font-family: var(--mono); color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <div class="eyebrow">No Excuses</div>
+      <h1>280 → 220</h1>
+    </div>
+    <div class="goal-chip">Today<br><b id="todayDate"></b></div>
+  </header>
+
+  <div class="quickbar">
+    <button class="qb-btn" onclick="openQuick('glucose')">+ Glucose</button>
+    <button class="qb-btn" onclick="openQuick('food')">+ Food</button>
+    <button class="qb-btn" onclick="openQuick('weight')">+ Weight</button>
+  </div>
+  <div id="quickFormWrap"></div>
+  <div id="checkinModalWrap"></div>
+
+  <!-- DASHBOARD -->
+  <div class="view active" id="view-dashboard">
+
+    <div class="card" id="macroCard">
+      <div class="card-title">Macros — Today vs Goal</div>
+      <div class="stat-row">
+        <div class="stat" id="proteinStat">
+          <div class="num" id="proteinNum">–</div>
+          <div class="lbl" id="proteinLbl">Protein</div>
+        </div>
+        <div class="stat" id="carbsStat">
+          <div class="num" id="carbsNum">–</div>
+          <div class="lbl" id="carbsLbl">Carbs</div>
+        </div>
+        <div class="stat" id="fatStat">
+          <div class="num" id="fatNum">–</div>
+          <div class="lbl" id="fatLbl">Fat</div>
+        </div>
+      </div>
+      <div class="disclaimer">Based on foods logged from the Foods tab or Favorites (they carry known macros). Quick-added or Eating Out entries add to calories but not this breakdown, since exact macros aren't known for those. Target split is set in Settings.</div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat" id="glucoseStat">
+        <div class="num" id="glucoseNow">–</div>
+        <div class="lbl">Glucose</div>
+      </div>
+      <div class="stat" id="calStat">
+        <div class="num" id="calNow">0</div>
+        <div class="lbl">Cal / <span id="calTargetLbl">2200</span></div>
+      </div>
+      <div class="stat">
+        <div class="num" id="weightNow">–</div>
+        <div class="lbl">Weight</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">General Guidelines — The Big Picture</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div>
+          <div style="font-family:var(--mono); font-size:11px; color:var(--green); text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px;">Lean Into</div>
+          <div style="font-size:13px; line-height:1.7; color:var(--text);">
+            Lean protein (chicken, fish, turkey)<br>
+            Legumes &amp; beans<br>
+            High-fiber veggies<br>
+            Whole grains over refined<br>
+            Nuts &amp; olive oil<br>
+            Fatty fish (omega-3s)
+          </div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono); font-size:11px; color:var(--red); text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px;">Go Easy On</div>
+          <div style="font-size:13px; line-height:1.7; color:var(--text);">
+            Fried foods<br>
+            Fatty/processed meat<br>
+            White bread &amp; white rice<br>
+            Sugary drinks<br>
+            Full-fat dairy &amp; butter<br>
+            Late, heavy meals
+          </div>
+        </div>
+      </div>
+      <div class="disclaimer" style="margin-top:12px;">General direction, not a strict diet — the Foods tab has the detail on any specific item. His doctor or a dietitian can tighten this into a personal plan against his labs and meds.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Glucose — Last 24h</div>
+      <div class="ribbon-wrap"><svg id="ribbonSvg" viewBox="0 0 700 120" preserveAspectRatio="none"></svg></div>
+      <div class="ribbon-legend">
+        <span><i class="dot" style="background:var(--red)"></i>&lt;70 low</span>
+        <span><i class="dot" style="background:var(--green)"></i>70–180 in range</span>
+        <span><i class="dot" style="background:var(--amber)"></i>180–250 high</span>
+        <span><i class="dot" style="background:var(--red)"></i>&gt;250 very high</span>
+      </div>
+    </div>
+
+    <div class="card" id="maintenanceCard">
+      <div class="card-title">Maintenance vs. What He's Eating</div>
+      <div class="stat-row" style="grid-template-columns:1fr 1fr;">
+        <div class="stat">
+          <div class="num" id="maintNum" style="color:var(--blue)">–</div>
+          <div class="lbl">Est. Maintenance</div>
+        </div>
+        <div class="stat">
+          <div class="num" id="deficitNum">–</div>
+          <div class="lbl" id="deficitLbl">Deficit Today</div>
+        </div>
+      </div>
+      <div class="disclaimer">Maintenance is estimated from his current weight, height, age, and activity level (set in Settings). It updates as he logs new weigh-ins.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Eating Out — No Excuse Not To Log It</div>
+      <div class="disclaimer" style="margin-bottom:10px;">Don't know the exact food? Rough it. Pick the closest size, log it, move on. A rough number beats no number.</div>
+      <div id="eatingOutList"></div>
+      <div id="favoritesSection" style="margin-top:12px;"></div>
+    </div>
+
+    <div class="card" id="patternCard">
+      <div class="card-title">Pattern — Not Advice, Just The Mirror</div>
+      <div id="patternText" class="callout">Log a few days of food + glucose and patterns will show up here.</div>
+      <div class="disclaimer">This shows correlations in the data only. Any change to insulin dosing or timing should go through his doctor — this app doesn't make treatment decisions.</div>
+    </div>
+
+  </div>
+
+  <!-- FOOD LIBRARY -->
+  <div class="view" id="view-library">
+    <div class="card">
+      <div class="card-title">Suggested Foods — Cholesterol-Conscious</div>
+      <input type="text" id="foodSearch" placeholder="Type to search — e.g. 'chicken', 'rice'..." oninput="renderLibrary()" style="margin-bottom:12px;">
+      <div class="filter-row" id="filterRow"></div>
+      <div id="foodList"></div>
+    </div>
+    <div class="card">
+      <div class="disclaimer">Green = well-supported for lowering/maintaining LDL (fiber, unsaturated fat, omega-3). Yellow = fine in moderation. Red = worth limiting, not forbidden. This is general nutrition guidance, not a personalized meal plan — his doctor or a dietitian should tailor targets to his labs and meds.</div>
+    </div>
+  </div>
+
+  <!-- LOG / HISTORY -->
+  <div class="view" id="view-log">
+    <div class="card">
+      <div class="card-title" style="display:flex; justify-content:space-between; align-items:center;">
+        <span>Food vs. Blood Sugar</span>
+        <span style="display:flex; gap:8px;">
+          <button class="ghost small" onclick="shiftLogDate(-1)">‹</button>
+          <span id="logDateLbl" style="font-family:var(--mono); font-size:12px; align-self:center; color:var(--text);"></span>
+          <button class="ghost small" onclick="shiftLogDate(1)">›</button>
+        </span>
+      </div>
+      <div id="todayLog"></div>
+    </div>
+  </div>
+
+  <!-- INSIGHTS -->
+  <div class="view" id="view-insights">
+    <div class="card">
+      <div class="card-title">Accountability</div>
+      <div class="stat-row">
+        <div class="stat"><div class="num" id="insDaysLogged">0</div><div class="lbl">Days Logged</div></div>
+        <div class="stat"><div class="num" id="insStreak">0</div><div class="lbl">Current Streak</div></div>
+        <div class="stat"><div class="num" id="insInRange">–</div><div class="lbl">% In Range</div></div>
+      </div>
+      <div id="insWeightProgress" class="callout"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Weekly Check-Ins</div>
+      <div id="checkinHistory" class="checkin-history"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Which Foods Do What — Avg Glucose Response</div>
+      <div id="insFoodTable"></div>
+      <div class="disclaimer">Averages the nearest glucose reading within 3 hours after each time he's logged that food. Needs a few repeats of a food to mean much — one data point isn't a pattern.</div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="view" id="view-settings">
+    <div class="card">
+      <div class="card-title">Targets</div>
+      <label>Daily Calorie Target</label>
+      <input type="number" id="setCalTarget" value="2200">
+      <div class="row2">
+        <div><label>Start Weight</label><input type="number" id="setStartWeight" value="280"></div>
+        <div><label>Goal Weight</label><input type="number" id="setGoalWeight" value="220"></div>
+      </div>
+      <button onclick="saveSettings()">Save Targets</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Macro Target Split (%)</div>
+      <div class="row3">
+        <div><label>Protein %</label><input type="number" id="setMacroP" value="30"></div>
+        <div><label>Carbs %</label><input type="number" id="setMacroC" value="40"></div>
+        <div><label>Fat %</label><input type="number" id="setMacroF" value="30"></div>
+      </div>
+      <button onclick="saveSettings()">Save Macro Targets</button>
+      <div class="disclaimer" style="margin-top:10px;">This is a general target split, not a number tied to his insulin dosing — his doctor or a dietitian can tailor it further against his labs and meds.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Maintenance Calorie Inputs</div>
+      <div class="row3">
+        <div><label>Age</label><input type="number" id="setAge" value="45"></div>
+        <div><label>Height (in)</label><input type="number" id="setHeight" value="70"></div>
+        <div><label>Sex</label>
+          <select id="setSex">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </div>
+      </div>
+      <label>Activity Level</label>
+      <select id="setActivity">
+        <option value="1.2">Sedentary — desk job, little exercise</option>
+        <option value="1.375">Lightly active — some walking</option>
+        <option value="1.55">Moderately active — on feet / exercises few days a week</option>
+        <option value="1.725">Very active — physical job or daily training</option>
+      </select>
+      <button onclick="saveSettings()">Save & Recalculate</button>
+      <div class="disclaimer" style="margin-top:10px;">Maintenance calories are an estimate (Mifflin-St Jeor formula) based on his current logged weight. It's a planning number, not a medical calculation — his doctor or a dietitian can refine it against his actual labs and meds.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">About Glucose Entry</div>
+      <div class="disclaimer">This version uses manual glucose entry. Wiring in live Dexcom G7 readings is a separate build step (needs a Dexcom developer account + a small backend to handle the connection securely) — happy to add that once he's using this daily.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Reset</div>
+      <button class="ghost" onclick="if(confirm('Erase all logged data? This cannot be undone.')){localStorage.removeItem(STORE_KEY); location.reload();}">Clear All Data</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-view="dashboard" onclick="go('dashboard')"><span class="ico">◆</span>Today</div>
+  <div class="tab" data-view="library" onclick="go('library')"><span class="ico">▤</span>Foods</div>
+  <div class="tab" data-view="log" onclick="go('log')"><span class="ico">≡</span>Log</div>
+  <div class="tab" data-view="insights" onclick="go('insights')"><span class="ico">✦</span>Insights</div>
+  <div class="tab" data-view="settings" onclick="go('settings')"><span class="ico">⚙</span>Settings</div>
+</div>
+
+<script>
+const STORE_KEY = 'healthcmd_v1';
+
+const FOODS = [
+  {name:"Steel-cut oats, cooked", cat:"Breakfast", unit:"cup", cal:150, p:5, c:27, f:3, fiber:4, tag:"green", tip:"Soluble fiber binds cholesterol in the gut — best cholesterol food there is."},
+  {name:"Egg whites", cat:"Breakfast", unit:"3 whites", cal:51, p:11, c:1, f:0, fiber:0, tag:"green", tip:"Protein with none of the yolk's dietary cholesterol."},
+  {name:"Whole eggs", cat:"Breakfast", unit:"2 eggs", cal:140, p:12, c:1, f:10, fiber:0, tag:"yellow", tip:"Fine in moderation — dietary cholesterol matters less than saturated fat overall."},
+  {name:"Greek yogurt, plain nonfat", cat:"Breakfast", unit:"cup", cal:130, p:22, c:8, f:0, fiber:0, tag:"green", tip:"High protein, low sat fat, keeps him full longer."},
+  {name:"Avocado", cat:"Fats", unit:"half", cal:120, p:1, c:6, f:11, fiber:5, tag:"green", tip:"Monounsaturated fat — helps raise HDL, the 'good' cholesterol."},
+  {name:"Almonds", cat:"Snacks", unit:"handful (~¼ cup)", cal:207, p:8, c:8, f:18, fiber:4, tag:"green", tip:"A daily handful is linked to meaningful LDL drops."},
+  {name:"Walnuts", cat:"Snacks", unit:"handful (~¼ cup)", cal:196, p:5, c:4, f:20, fiber:2, tag:"green", tip:"Omega-3 rich — good for both cholesterol and triglycerides."},
+  {name:"Salmon", cat:"Protein", unit:"palm-size piece", cal:233, p:25, c:0, f:14, fiber:0, tag:"green", tip:"Omega-3s lower triglycerides, one of the best proteins for his goals."},
+  {name:"Grilled chicken breast", cat:"Protein", unit:"palm-size piece", cal:187, p:35, c:0, f:4, fiber:0, tag:"green", tip:"Lean protein, low sat fat — a reliable base for most meals."},
+  {name:"Ground turkey 93/7", cat:"Protein", unit:"cup cooked", cal:230, p:33, c:0, f:10, fiber:0, tag:"yellow", tip:"Leaner than beef but still has some sat fat — fine a few times a week."},
+  {name:"Ground beef 80/20", cat:"Protein", unit:"cup cooked", cal:340, p:28, c:0, f:24, fiber:0, tag:"red", tip:"High in saturated fat — swap for the 93/7 turkey or a leaner cut when he can."},
+  {name:"Bacon", cat:"Protein", unit:"2 slices", cal:80, p:6, c:0, f:6, fiber:0, tag:"red", tip:"Processed + high sat fat — an occasional treat, not a daily food."},
+  {name:"Black beans", cat:"Legumes", unit:"cup", cal:227, p:15, c:41, f:1, fiber:15, tag:"green", tip:"Huge fiber payoff — legumes are one of the most proven LDL-lowering foods."},
+  {name:"Lentils", cat:"Legumes", unit:"cup", cal:230, p:18, c:40, f:1, fiber:16, tag:"green", tip:"Also slow to digest — gentler on blood sugar than most starches."},
+  {name:"Chickpeas", cat:"Legumes", unit:"cup", cal:269, p:15, c:45, f:4, fiber:13, tag:"green", tip:"Good fiber, versatile — works in salads or as a side."},
+  {name:"Brown rice, cooked", cat:"Grains", unit:"cup", cal:216, p:5, c:45, f:2, fiber:3, tag:"yellow", tip:"Better than white rice for fiber, still watch portion size."},
+  {name:"White rice, cooked", cat:"Grains", unit:"cup", cal:205, p:4, c:45, f:0, fiber:1, tag:"yellow", tip:"Low fiber, spikes blood sugar faster — smaller portions, pair with protein."},
+  {name:"Quinoa, cooked", cat:"Grains", unit:"cup", cal:222, p:8, c:39, f:4, fiber:5, tag:"green", tip:"Complete protein plus fiber — a strong rice substitute."},
+  {name:"Whole wheat bread", cat:"Grains", unit:"1 slice", cal:81, p:4, c:14, f:1, fiber:2, tag:"green", tip:"Check label for '100% whole grain' as the first ingredient."},
+  {name:"White bread", cat:"Grains", unit:"1 slice", cal:75, p:2, c:14, f:1, fiber:1, tag:"red", tip:"Refined carb, minimal fiber — swap for whole grain when possible."},
+  {name:"Broccoli, cooked", cat:"Vegetables", unit:"cup", cal:31, p:3, c:6, f:0, fiber:2, tag:"green", tip:"Low calorie, high volume — good for fullness without the calorie cost."},
+  {name:"Spinach, raw", cat:"Vegetables", unit:"cup", cal:7, p:1, c:1, f:0, fiber:1, tag:"green", tip:"Basically free calories — bulk up any meal with it."},
+  {name:"Sweet potato", cat:"Vegetables", unit:"1 medium (fist-size)", cal:103, p:2, c:24, f:0, fiber:4, tag:"green", tip:"More fiber and nutrients than a regular potato, similar calories."},
+  {name:"French fries", cat:"Vegetables", unit:"cup (~medium serving)", cal:365, p:4, c:48, f:17, fiber:4, tag:"red", tip:"Fried in the wrong oil, easy to overeat — swap for baked sweet potato wedges."},
+  {name:"Olive oil", cat:"Fats", unit:"1 tbsp (thumb-size)", cal:119, p:0, c:0, f:14, fiber:0, tag:"green", tip:"The go-to fat for cooking and dressing — swap for butter where he can."},
+  {name:"Butter", cat:"Fats", unit:"1 tbsp (thumb-size)", cal:102, p:0, c:0, f:11, fiber:0, tag:"red", tip:"High in saturated fat — olive oil or avocado oil is the swap."},
+  {name:"Whole milk", cat:"Dairy", unit:"cup", cal:149, p:8, c:12, f:8, fiber:0, tag:"yellow", tip:"Consider 2% or unsweetened almond milk to cut sat fat."},
+  {name:"Cheddar cheese", cat:"Dairy", unit:"2 thumbs-size", cal:113, p:7, c:0, f:9, fiber:0, tag:"red", tip:"Easy to overdo — treat as a topping, not a portion."},
+  {name:"Apple", cat:"Fruit", unit:"1 medium", cal:95, p:0, c:25, f:0, fiber:4, tag:"green", tip:"Pectin fiber helps cholesterol, skin-on for the full benefit."},
+  {name:"Berries", cat:"Fruit", unit:"cup", cal:65, p:1, c:15, f:0, fiber:4, tag:"green", tip:"Lower sugar than most fruit, high in fiber and antioxidants."},
+  {name:"Banana", cat:"Fruit", unit:"1 medium", cal:105, p:1, c:27, f:0, fiber:3, tag:"yellow", tip:"Good potassium, but higher sugar — fine, just mind portions with glucose in mind."},
+  {name:"Potato chips", cat:"Snacks", unit:"cup (~1oz)", cal:152, p:2, c:15, f:10, fiber:1, tag:"red", tip:"Refined + fried — almonds or a small popcorn portion is the swap."},
+  {name:"Popcorn, air-popped", cat:"Snacks", unit:"3 cups", cal:93, p:3, c:19, f:1, fiber:4, tag:"green", tip:"Whole grain, high volume for the calories — good evening snack."},
+  {name:"Dark chocolate 70%+", cat:"Snacks", unit:"2 squares", cal:170, p:2, c:13, f:12, fiber:3, tag:"yellow", tip:"Some flavanol benefit — small portion, not the whole bar."},
+];
+
+const EATING_OUT = [
+  {label:"Light entrée", sub:"salad, grilled fish, lean bowl", cal:500, tag:"green"},
+  {label:"Average entrée", sub:"typical dinner plate", cal:800, tag:"yellow"},
+  {label:"Heavy/fried entrée", sub:"burger, pasta, fried anything", cal:1200, tag:"red"},
+  {label:"Appetizer / side", sub:"shared starter, bread, fries", cal:350, tag:"yellow"},
+  {label:"Dessert", sub:"shared or small portion", cal:450, tag:"red"},
+  {label:"Alcoholic drink", sub:"beer, wine, cocktail", cal:150, tag:"yellow"},
+  {label:"Fast food combo", sub:"sandwich + fries + drink", cal:900, tag:"red"},
+  {label:"Coffee shop order", sub:"latte + pastry", cal:500, tag:"yellow"},
+];
+
+let state = load();
+
+function load(){
+  const raw = localStorage.getItem(STORE_KEY);
+  if(raw){ try{ return JSON.parse(raw); }catch(e){} }
+  return { entries: [], settings: { calTarget: 2200, startWeight: 280, goalWeight: 220, age: 45, height: 70, sex: 'male', activity: 1.375, macroTargets: {p:30, c:40, f:30} } };
+}
+function save(){ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+
+function go(view){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+  document.querySelector(`.tab[data-view="${view}"]`).classList.add('active');
+  if(view==='library') renderLibrary();
+  if(view==='log'){ viewedDate = todayStr(); renderLog(); }
+  if(view==='insights') renderInsights();
+}
+
+// ---------- Quick add forms ----------
+function openQuick(type){
+  const el = document.getElementById('quickFormWrap');
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  if(type==='glucose'){
+    el.innerHTML = `<div class="card">
+      <label>Glucose Reading (mg/dL)</label>
+      <input type="number" id="qGlucose" placeholder="e.g. 142">
+      <label>Time</label>
+      <input type="time" id="qTime" value="${hh}:${mm}">
+      <button onclick="submitGlucose()">Save Reading</button>
+      <button class="ghost small" style="width:100%; margin-top:8px;" onclick="closeQuick()">Cancel</button>
+    </div>`;
+  } else if(type==='food'){
+    el.innerHTML = `<div class="card">
+      <label>Food</label>
+      <input type="text" id="qFoodName" list="foodDatalist" placeholder="Start typing — e.g. 'chicken'..." oninput="autofillFoodCal()" autocomplete="off">
+      <datalist id="foodDatalist"></datalist>
+      <label>Amount</label>
+      <input type="text" id="qFoodAmount" placeholder="e.g. 1 cup, 2 pieces, 1 plate">
+      <label>Calories</label>
+      <input type="number" id="qFoodCal" placeholder="e.g. 450">
+      <label>Time</label>
+      <input type="time" id="qTime" value="${hh}:${mm}">
+      <div class="checkbox-row"><input type="checkbox" id="qFav"><label for="qFav">Save as a favorite for one-tap logging later</label></div>
+      <button onclick="submitFood()">Log Food</button>
+      <button class="ghost small" style="width:100%; margin-top:8px;" onclick="closeQuick()">Cancel</button>
+    </div>`;
+    populateFoodDatalist();
+  } else if(type==='weight'){
+    el.innerHTML = `<div class="card">
+      <label>Weight (lbs)</label>
+      <input type="number" id="qWeight" placeholder="e.g. 278">
+      <button onclick="submitWeight()">Log Weight</button>
+      <button class="ghost small" style="width:100%; margin-top:8px;" onclick="closeQuick()">Cancel</button>
+    </div>`;
+  }
+}
+function closeQuick(){ document.getElementById('quickFormWrap').innerHTML = ''; }
+function populateFoodDatalist(){
+  const dl = document.getElementById('foodDatalist');
+  if(!dl) return;
+  const favNames = (state.favorites || []).map(f=>f.name);
+  const foodNames = FOODS.map(f=>f.name);
+  const all = [...new Set([...favNames, ...foodNames])];
+  dl.innerHTML = all.map(n => `<option value="${n}">`).join('');
+}
+function autofillFoodCal(){
+  const nameVal = document.getElementById('qFoodName').value.trim();
+  const fav = (state.favorites || []).find(f => f.name === nameVal);
+  const libFood = FOODS.find(f => f.name === nameVal);
+  const calInput = document.getElementById('qFoodCal');
+  const amountInput = document.getElementById('qFoodAmount');
+  if(fav){
+    calInput.value = fav.cal;
+  } else if(libFood){
+    calInput.value = libFood.cal;
+    if(amountInput && !amountInput.value) amountInput.value = `1 ${libFood.unit}`;
+  }
+}
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+
+function submitGlucose(){
+  const v = parseFloat(document.getElementById('qGlucose').value);
+  const t = document.getElementById('qTime').value;
+  if(!v){ return; }
+  state.entries.push({type:'glucose', date: todayStr(), time: t, value: v, ts: Date.now()});
+  save(); closeQuick(); renderDashboard();
+}
+function submitFood(){
+  const name = document.getElementById('qFoodName').value.trim();
+  const amount = document.getElementById('qFoodAmount').value.trim();
+  const cal = parseFloat(document.getElementById('qFoodCal').value);
+  const t = document.getElementById('qTime').value;
+  const wantFav = document.getElementById('qFav') && document.getElementById('qFav').checked;
+  if(!name || !cal){ return; }
+  const displayName = amount ? `${name} (${amount})` : name;
+  const libFood = FOODS.find(f => f.name === name);
+  const entry = {type:'food', date: todayStr(), time: t, name: displayName, amount: amount, cal: cal, ts: Date.now()};
+  if(libFood){ entry.p = libFood.p; entry.c = libFood.c; entry.fat = libFood.f; entry.tag = libFood.tag; }
+  state.entries.push(entry);
+  if(wantFav){
+    if(!state.favorites) state.favorites = [];
+    if(!state.favorites.some(f=>f.name===name)){
+      const fav = { name, cal, amount };
+      if(libFood){ fav.p = libFood.p; fav.c = libFood.c; fav.fat = libFood.f; fav.tag = libFood.tag; }
+      state.favorites.push(fav);
+    }
+  }
+  save(); closeQuick(); renderDashboard();
+}
+function submitWeight(){
+  const v = parseFloat(document.getElementById('qWeight').value);
+  if(!v){ return; }
+  state.entries.push({type:'weight', date: todayStr(), value: v, ts: Date.now()});
+  save(); closeQuick(); renderDashboard();
+}
+// ---------- Dashboard render ----------
+function renderMacros(foodEntries){
+  let totalP=0, totalC=0, totalF=0;
+  foodEntries.forEach(e=>{
+    if(typeof e.p === 'number') totalP += e.p;
+    if(typeof e.c === 'number') totalC += e.c;
+    if(typeof e.fat === 'number') totalF += e.fat;
+  });
+  const macroCals = totalP*4 + totalC*4 + totalF*9;
+  const pctP = macroCals ? Math.round((totalP*4/macroCals)*100) : 0;
+  const pctC = macroCals ? Math.round((totalC*4/macroCals)*100) : 0;
+  const pctF = macroCals ? Math.round((totalF*9/macroCals)*100) : 0;
+  const targets = state.settings.macroTargets || {p:30, c:40, f:30};
+
+  updateMacroStat('protein', Math.round(totalP), pctP, targets.p);
+  updateMacroStat('carbs', Math.round(totalC), pctC, targets.c);
+  updateMacroStat('fat', Math.round(totalF), pctF, targets.f);
+}
+function updateMacroStat(key, grams, pct, target){
+  const numEl = document.getElementById(key+'Num');
+  const lblEl = document.getElementById(key+'Lbl');
+  const statEl = document.getElementById(key+'Stat');
+  const label = key.charAt(0).toUpperCase()+key.slice(1);
+  numEl.textContent = pct + '%';
+  lblEl.textContent = `${label} · ${grams}g · goal ${target}%`;
+  const diff = Math.abs(pct - target);
+  let cls = 'range-green';
+  if(diff > 15) cls = 'range-red';
+  else if(diff > 7) cls = 'range-amber';
+  statEl.className = 'stat ' + cls;
+}
+
+function rangeClass(v){
+  if(v < 70 || v > 250) return 'range-red';
+  if(v > 180) return 'range-amber';
+  return 'range-green';
+}
+function calRangeClass(total, target){
+  if(!target || target <= 0) return '';
+  const pct = total / target;
+  if(pct > 1) return 'range-red';
+  if(pct >= 0.9) return 'range-amber';
+  return 'range-green';
+}
+function glucoseColor(v){
+  if(v < 70 || v > 250) return getVar('--red');
+  if(v > 180) return getVar('--amber');
+  return getVar('--green');
+}
+function getVar(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+function renderDashboard(){
+  const today = todayStr();
+  const todays = state.entries.filter(e=>e.date===today);
+
+  // glucose now = latest reading today
+  const glucoseEntries = todays.filter(e=>e.type==='glucose').sort((a,b)=>a.ts-b.ts);
+  const gEl = document.getElementById('glucoseNow');
+  const gStat = document.getElementById('glucoseStat');
+  if(glucoseEntries.length){
+    const last = glucoseEntries[glucoseEntries.length-1];
+    gEl.textContent = last.value;
+    gStat.className = 'stat ' + rangeClass(last.value);
+  } else {
+    gEl.textContent = '–'; gStat.className='stat';
+  }
+
+  // calories
+  const foodEntries = todays.filter(e=>e.type==='food');
+  const totalCal = foodEntries.reduce((s,e)=>s+e.cal,0);
+  document.getElementById('calNow').textContent = totalCal;
+  document.getElementById('calTargetLbl').textContent = state.settings.calTarget;
+  document.getElementById('calStat').className = 'stat ' + calRangeClass(totalCal, state.settings.calTarget);
+
+  // weight
+  const weightEntries = state.entries.filter(e=>e.type==='weight').sort((a,b)=>a.ts-b.ts);
+  const currentWeight = weightEntries.length ? weightEntries[weightEntries.length-1].value : state.settings.startWeight;
+  document.getElementById('weightNow').textContent = weightEntries.length ? currentWeight : '–';
+
+  renderMaintenance(currentWeight, totalCal);
+  renderMacros(foodEntries);
+  drawRibbon(glucoseEntries, foodEntries);
+  renderPattern();
+  renderEatingOut();
+  renderFavorites();
+}
+
+function renderEatingOut(){
+  const el = document.getElementById('eatingOutList');
+  el.innerHTML = EATING_OUT.map((item, idx) => `
+    <div class="estimate-btn" onclick="logEatingOut(${idx}, this)">
+      <div class="estimate-left"><div class="name">${item.label}</div><div class="sub">${item.sub}</div></div>
+      <div class="estimate-cal">~${item.cal} cal</div>
+    </div>
+  `).join('');
+}
+function logEatingOut(idx, btnEl){
+  const item = EATING_OUT[idx];
+  const now = new Date();
+  const t = String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  state.entries.push({type:'food', date: todayStr(), time: t, name: item.label + ' (eating out est.)', cal: item.cal, tag: item.tag, ts: Date.now()});
+  save();
+  renderDashboard();
+  if(btnEl){
+    const orig = btnEl.innerHTML;
+    btnEl.style.borderColor = 'var(--green)';
+    btnEl.querySelector('.estimate-cal').textContent = 'Logged ✓';
+    setTimeout(()=>{ btnEl.innerHTML = orig; btnEl.style.borderColor=''; }, 1000);
+  }
+}
+
+function renderFavorites(){
+  const el = document.getElementById('favoritesSection');
+  const favs = state.favorites || [];
+  if(!favs.length){ el.innerHTML = ''; return; }
+  el.innerHTML = `<div class="fav-label">His Favorites — Tap To Log</div>` +
+    favs.map((f, idx) => `<span class="fav-chip" onclick="logFavorite(${idx})">★ ${f.name} · ${f.cal}cal</span>`).join('');
+}
+function logFavorite(idx){
+  const f = (state.favorites || [])[idx];
+  if(!f) return;
+  const now = new Date();
+  const t = String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  const entry = {type:'food', date: todayStr(), time: t, name: f.name, cal: f.cal, ts: Date.now()};
+  if(typeof f.p === 'number'){ entry.p = f.p; entry.c = f.c; entry.fat = f.fat; entry.tag = f.tag; }
+  state.entries.push(entry);
+  save();
+  renderDashboard();
+}
+
+function renderMaintenance(currentWeight, totalCalEaten){
+  const s = state.settings;
+  if(!s.age || !s.height || !s.sex || !s.activity){
+    document.getElementById('maintNum').textContent = 'Set up →';
+    document.getElementById('deficitNum').textContent = '–';
+    return;
+  }
+  const kg = currentWeight / 2.20462;
+  const cm = s.height * 2.54;
+  let bmr = 10*kg + 6.25*cm - 5*s.age;
+  bmr += (s.sex === 'male') ? 5 : -161;
+  const maintenance = Math.round(bmr * s.activity);
+  document.getElementById('maintNum').textContent = maintenance;
+
+  const diff = maintenance - totalCalEaten;
+  const deficitEl = document.getElementById('deficitNum');
+  const deficitLbl = document.getElementById('deficitLbl');
+  if(diff >= 200){
+    deficitEl.textContent = '-' + diff;
+    deficitEl.style.color = 'var(--green)';
+    deficitLbl.textContent = 'Deficit Today';
+  } else if(diff >= 0){
+    deficitEl.textContent = '-' + diff;
+    deficitEl.style.color = 'var(--amber)';
+    deficitLbl.textContent = 'Close To Even';
+  } else {
+    deficitEl.textContent = '+' + Math.abs(diff);
+    deficitEl.style.color = 'var(--red)';
+    deficitLbl.textContent = 'Surplus Today';
+  }
+}
+
+function drawRibbon(glucoseEntries, foodEntries){
+  const svg = document.getElementById('ribbonSvg');
+  const W = 700, H = 120;
+  let html = '';
+
+  // background range band (70-180 shaded)
+  const yFor = (v) => {
+    const clamped = Math.max(40, Math.min(300, v));
+    return H - ((clamped - 40) / (300-40)) * (H-20) - 10;
+  };
+  const yLow = yFor(70), yHigh = yFor(180);
+  html += `<rect x="0" y="${yHigh}" width="${W}" height="${yLow-yHigh}" fill="#3FA35A" opacity="0.08"/>`;
+  html += `<line x1="0" y1="${yLow}" x2="${W}" y2="${yLow}" stroke="#3FA35A" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>`;
+  html += `<line x1="0" y1="${yHigh}" x2="${W}" y2="${yHigh}" stroke="#3FA35A" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>`;
+
+  if(glucoseEntries.length === 0){
+    html += `<text x="${W/2}" y="${H/2}" fill="#8B96AC" font-size="13" text-anchor="middle" font-family="Inter">No glucose readings logged yet today</text>`;
+  } else {
+    const toMin = (t) => { const [h,m] = t.split(':').map(Number); return h*60+m; };
+    const sorted = [...glucoseEntries].sort((a,b)=>toMin(a.time)-toMin(b.time));
+    const pts = sorted.map(e => {
+      const x = (toMin(e.time)/1440) * W;
+      const y = yFor(e.value);
+      return {x,y,v:e.value};
+    });
+    let path = `M ${pts[0].x} ${pts[0].y}`;
+    for(let i=1;i<pts.length;i++) path += ` L ${pts[i].x} ${pts[i].y}`;
+    html += `<path d="${path}" fill="none" stroke="#C9A227" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+    pts.forEach(p=>{
+      const c = p.v<70||p.v>250 ? '#DD5252' : (p.v>180 ? '#E0A63C' : '#3FA35A');
+      html += `<circle cx="${p.x}" cy="${p.y}" r="4" fill="${c}" stroke="#0A1120" stroke-width="1.5"/>`;
+    });
+    // food markers
+    foodEntries.forEach(f=>{
+      const x = (toMin(f.time)/1440) * W;
+      html += `<line x1="${x}" y1="${H-4}" x2="${x}" y2="${H+4}" stroke="#4C86C9" stroke-width="2"/>`;
+      html += `<circle cx="${x}" cy="${H-4}" r="3" fill="#4C86C9"/>`;
+    });
+  }
+  svg.innerHTML = html;
+}
+
+function renderPattern(){
+  const foodEntries = state.entries.filter(e=>e.type==='food');
+  const redFoods = foodEntries.filter(e=>e.tag==='red').length;
+  const greenFoods = foodEntries.filter(e=>e.tag==='green').length;
+  const glucoseEntries = state.entries.filter(e=>e.type==='glucose');
+  const highs = glucoseEntries.filter(e=>e.value>180).length;
+  const days = new Set(state.entries.map(e=>e.date)).size;
+
+  const el = document.getElementById('patternText');
+  if(days < 2){
+    el.innerHTML = "Log a few more days of food + glucose and patterns will show up here.";
+    return;
+  }
+  let msg = `<b>${days} days logged.</b> `;
+  if(highs>0) msg += `${highs} glucose reading${highs===1?'':'s'} above 180 so far. `;
+  if(greenFoods || redFoods) msg += `${greenFoods} cholesterol-friendly food logs vs ${redFoods} flagged for limiting. `;
+  msg += `Worth reviewing with his doctor if the highs cluster around a particular meal or time.`;
+  el.innerHTML = msg;
+}
+
+// ---------- Food Library ----------
+let activeFilter = 'All';
+function renderLibrary(){
+  const cats = ['All', ...new Set(FOODS.map(f=>f.cat))];
+  const filterRow = document.getElementById('filterRow');
+  filterRow.innerHTML = cats.map(c=>`<div class="filter-chip ${c===activeFilter?'active':''}" onclick="setFilter('${c}')">${c}</div>`).join('');
+
+  const searchVal = (document.getElementById('foodSearch').value || '').trim().toLowerCase();
+  const list = document.getElementById('foodList');
+  let filtered = activeFilter==='All' ? FOODS : FOODS.filter(f=>f.cat===activeFilter);
+  if(searchVal) filtered = filtered.filter(f => f.name.toLowerCase().includes(searchVal));
+
+  if(!filtered.length){
+    list.innerHTML = `<div class="empty"><span class="big">○</span>No foods match "${searchVal}". Try a different word, or log it as Eating Out / Quick Add from the Today tab.</div>`;
+    return;
+  }
+
+  const portions = [0.5, 1, 1.5, 2];
+  list.innerHTML = filtered.map((f)=>{
+    const idx = FOODS.indexOf(f);
+    return `
+    <div class="food-item">
+      <div class="food-left">
+        <span class="tag tag-${f.tag}"></span>
+        <div>
+          <div class="food-name">${f.name} <span style="color:var(--muted); font-weight:400; font-size:12px;">— 1 ${f.unit} = ${f.cal} cal</span></div>
+          <div class="food-macros">${f.p}g protein · ${f.c}g carbs · ${f.f}g fat · ${f.fiber}g fiber (per ${f.unit})</div>
+          <div class="food-tip">${f.tip}</div>
+        </div>
+      </div>
+      <div class="portion-row">
+        ${portions.map(m=>`<button class="portion-btn" onclick="logFoodFromLibrary(${idx}, ${m}, this)">${m===0.5?'½':m} ${f.unit}${m!==1?'s':''}</button>`).join('')}
+      </div>
+    </div>
+  `;}).join('');
+}
+function setFilter(c){ activeFilter = c; renderLibrary(); }
+function logFoodFromLibrary(idx, multiplier, btnEl){
+  const f = FOODS[idx];
+  const now = new Date();
+  const t = String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  const scaledCal = Math.round(f.cal * multiplier);
+  state.entries.push({
+    type:'food', date: todayStr(), time: t,
+    name: `${f.name} (${multiplier===0.5?'½':multiplier} ${f.unit})`,
+    cal: scaledCal, tag: f.tag,
+    p: +(f.p*multiplier).toFixed(1), c: +(f.c*multiplier).toFixed(1), fat: +(f.f*multiplier).toFixed(1),
+    ts: Date.now()
+  });
+  save();
+  renderDashboard();
+  if(btnEl){
+    const orig = btnEl.textContent;
+    btnEl.textContent = 'Logged ✓';
+    btnEl.classList.add('portion-flash');
+    setTimeout(()=>{ btnEl.textContent = orig; btnEl.classList.remove('portion-flash'); }, 1000);
+  }
+}
+
+// ---------- Log / History ----------
+let viewedDate = todayStr();
+function shiftLogDate(dir){
+  const d = new Date(viewedDate + 'T00:00:00');
+  d.setDate(d.getDate() + dir);
+  viewedDate = d.toISOString().slice(0,10);
+  renderLog();
+}
+function renderLog(){
+  const label = viewedDate === todayStr() ? 'Today' : new Date(viewedDate + 'T00:00:00').toLocaleDateString('en-US',{month:'short', day:'numeric'});
+  document.getElementById('logDateLbl').textContent = label;
+
+  const dayEntries = state.entries.filter(e=>e.date===viewedDate).sort((a,b)=>a.ts-b.ts);
+  const el = document.getElementById('todayLog');
+  if(!dayEntries.length){
+    el.innerHTML = `<div class="empty"><span class="big">○</span>Nothing logged on this day.</div>`;
+    return;
+  }
+
+  const toMin = (t) => { const [h,m] = t.split(':').map(Number); return h*60+m; };
+  const glucoseEntries = dayEntries.filter(e=>e.type==='glucose');
+
+  el.innerHTML = dayEntries.map(e=>{
+    if(e.type==='glucose'){
+      return `<div class="log-entry"><div class="log-time">${e.time}</div><div class="log-mid">Glucose reading</div><div class="log-val" style="color:${glucoseColor(e.value)}">${e.value} mg/dL</div></div>`;
+    }
+    if(e.type==='food'){
+      // find nearest glucose reading within 3 hours AFTER this food was logged
+      const foodMin = toMin(e.time);
+      let nearest = null, nearestDiff = Infinity;
+      glucoseEntries.forEach(g=>{
+        const diff = toMin(g.time) - foodMin;
+        if(diff >= 0 && diff <= 180 && diff < nearestDiff){ nearest = g; nearestDiff = diff; }
+      });
+      const afterHtml = nearest
+        ? `<span style="color:${glucoseColor(nearest.value)}; font-family:var(--mono); font-size:11px;"> → ${nearest.value} (+${nearestDiff}m)</span>`
+        : '';
+      return `<div class="log-entry"><div class="log-time">${e.time}</div><div class="log-mid">${e.name}${afterHtml}</div><div class="log-val">${e.cal} cal</div></div>`;
+    }
+    if(e.type==='weight') return `<div class="log-entry"><div class="log-time">—</div><div class="log-mid">Weight logged</div><div class="log-val">${e.value} lbs</div></div>`;
+  }).join('');
+}
+
+// ---------- Insights ----------
+function baseFoodName(name){
+  // strip trailing portion note like " (1 cup)" or " (½ palm-size piece)"
+  return name.replace(/\s*\([^)]*\)\s*$/, '').trim();
+}
+function renderInsights(){
+  renderCheckinHistory();
+  const allDates = [...new Set(state.entries.map(e=>e.date))].sort();
+  document.getElementById('insDaysLogged').textContent = allDates.length;
+
+  // streak: consecutive days ending today
+  let streak = 0;
+  let cursor = new Date(todayStr() + 'T00:00:00');
+  const dateSet = new Set(allDates);
+  while(true){
+    const ds = cursor.toISOString().slice(0,10);
+    if(dateSet.has(ds)){ streak++; cursor.setDate(cursor.getDate()-1); }
+    else break;
+  }
+  document.getElementById('insStreak').textContent = streak + (streak===1?' day':' days');
+
+  // % in range
+  const glucoseEntries = state.entries.filter(e=>e.type==='glucose');
+  if(glucoseEntries.length){
+    const inRange = glucoseEntries.filter(e=>e.value>=70 && e.value<=180).length;
+    document.getElementById('insInRange').textContent = Math.round((inRange/glucoseEntries.length)*100) + '%';
+  } else {
+    document.getElementById('insInRange').textContent = '–';
+  }
+
+  // weight progress
+  const weightEntries = state.entries.filter(e=>e.type==='weight').sort((a,b)=>a.ts-b.ts);
+  const s = state.settings;
+  const progEl = document.getElementById('insWeightProgress');
+  if(weightEntries.length){
+    const current = weightEntries[weightEntries.length-1].value;
+    const totalToLose = s.startWeight - s.goalWeight;
+    const lostSoFar = s.startWeight - current;
+    const pct = totalToLose > 0 ? Math.max(0, Math.min(100, Math.round((lostSoFar/totalToLose)*100))) : 0;
+    progEl.innerHTML = `<b>${current} lbs</b> — down ${lostSoFar >= 0 ? lostSoFar.toFixed(1) : 0} lbs from ${s.startWeight}, ${pct}% of the way to ${s.goalWeight}.`;
+  } else {
+    progEl.innerHTML = `No weight logged yet. Starting point set at ${s.startWeight} lbs, goal ${s.goalWeight} lbs.`;
+  }
+
+  // food impact table
+  const toMin = (t) => { const [h,m] = t.split(':').map(Number); return h*60+m; };
+  const foodEntries = state.entries.filter(e=>e.type==='food');
+  const groups = {};
+  foodEntries.forEach(f=>{
+    const key = baseFoodName(f.name);
+    if(!groups[key]) groups[key] = { count:0, responses:[], tag: f.tag };
+    groups[key].count++;
+    const dayGlucose = state.entries.filter(e=>e.type==='glucose' && e.date===f.date);
+    const fMin = toMin(f.time);
+    let nearest = null, nearestDiff = Infinity;
+    dayGlucose.forEach(g=>{
+      const diff = toMin(g.time) - fMin;
+      if(diff>=0 && diff<=180 && diff<nearestDiff){ nearest = g.value; nearestDiff = diff; }
+    });
+    if(nearest !== null) groups[key].responses.push(nearest);
+  });
+  const rows = Object.entries(groups)
+    .map(([name, g]) => ({
+      name, count: g.count, tag: g.tag,
+      avg: g.responses.length ? Math.round(g.responses.reduce((a,b)=>a+b,0)/g.responses.length) : null
+    }))
+    .sort((a,b) => (b.avg||0) - (a.avg||0));
+
+  const tableEl = document.getElementById('insFoodTable');
+  if(!rows.length){
+    tableEl.innerHTML = `<div class="empty"><span class="big">○</span>No foods logged yet.</div>`;
+    return;
+  }
+  tableEl.innerHTML = rows.map(r => `
+    <div class="log-entry">
+      <div class="log-mid"><span class="tag tag-${r.tag||'yellow'}" style="margin-top:0;"></span>${r.name} <span style="color:var(--muted); font-family:var(--mono); font-size:11px;">×${r.count}</span></div>
+      <div class="log-val" style="color:${r.avg ? glucoseColor(r.avg) : 'var(--muted)'}">${r.avg ? r.avg + ' mg/dL avg' : 'no reading paired'}</div>
+    </div>
+  `).join('');
+}
+
+
+// ---------- Weekly Check-In ----------
+function daysBetween(d1, d2){
+  const a = new Date(d1 + 'T00:00:00'), b = new Date(d2 + 'T00:00:00');
+  return Math.round((b - a) / 86400000);
+}
+function checkinDue(){
+  const today = todayStr();
+  if(state.lastPromptDate === today) return false; // don't nag more than once a day
+  const checkins = state.checkins || [];
+  if(checkins.length){
+    const lastDate = checkins[checkins.length-1].date;
+    return daysBetween(lastDate, today) >= 7;
+  }
+  // no check-ins yet — only prompt once he's got at least 4 days of history logged
+  const firstEntryDates = [...new Set(state.entries.map(e=>e.date))].sort();
+  if(!firstEntryDates.length) return false;
+  return daysBetween(firstEntryDates[0], today) >= 4;
+}
+function weekSummary(){
+  const cutoff = new Date(); cutoff.setDate(cutoff.getDate()-7);
+  const cutoffStr = cutoff.toISOString().slice(0,10);
+  const recent = state.entries.filter(e=>e.date >= cutoffStr);
+  const daysLogged = new Set(recent.map(e=>e.date)).size;
+  const glu = recent.filter(e=>e.type==='glucose');
+  const avgGlu = glu.length ? Math.round(glu.reduce((a,b)=>a+b.value,0)/glu.length) : null;
+  const weights = recent.filter(e=>e.type==='weight').sort((a,b)=>a.ts-b.ts);
+  const weightChange = weights.length>=2 ? +(weights[weights.length-1].value - weights[0].value).toFixed(1) : null;
+  return { daysLogged, avgGlu, weightChange };
+}
+let checkinSelections = { energy:null, consistency:null };
+function maybeShowCheckin(){
+  if(!checkinDue()) return;
+  const sum = weekSummary();
+  checkinSelections = { energy:null, consistency:null };
+  const wrap = document.getElementById('checkinModalWrap');
+  wrap.innerHTML = `
+    <div class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-title">Weekly Check-In</div>
+        <div class="modal-sub">Takes 20 seconds. Just tap — no essays required.</div>
+
+        <div class="week-summary">
+          <div class="stat"><div class="num">${sum.daysLogged}/7</div><div class="lbl">Days Logged</div></div>
+          <div class="stat"><div class="num">${sum.avgGlu ?? '–'}</div><div class="lbl">Avg Glucose</div></div>
+          <div class="stat"><div class="num">${sum.weightChange !== null ? (sum.weightChange>0?'+':'')+sum.weightChange : '–'}</div><div class="lbl">Weight Change</div></div>
+        </div>
+
+        <label>Energy this week</label>
+        <div class="choice-row">
+          <div class="choice-btn" data-k="energy" data-v="Low" onclick="selectCheckin(this)">Low</div>
+          <div class="choice-btn" data-k="energy" data-v="Medium" onclick="selectCheckin(this)">Medium</div>
+          <div class="choice-btn" data-k="energy" data-v="High" onclick="selectCheckin(this)">High</div>
+        </div>
+
+        <label>How did logging feel</label>
+        <div class="choice-row">
+          <div class="choice-btn" data-k="consistency" data-v="Easy" onclick="selectCheckin(this)">Easy</div>
+          <div class="choice-btn" data-k="consistency" data-v="A grind" onclick="selectCheckin(this)">A grind</div>
+          <div class="choice-btn" data-k="consistency" data-v="Skipped days" onclick="selectCheckin(this)">Skipped days</div>
+        </div>
+
+        <label>Biggest win (optional)</label>
+        <input type="text" id="checkinWin" placeholder="e.g. Cooked at home 5 nights">
+        <label>What's in the way right now (optional)</label>
+        <input type="text" id="checkinStruggle" placeholder="e.g. Travel this week, no time to cook">
+
+        <button onclick="submitCheckin()">Save Check-In</button>
+        <button class="ghost small" style="width:100%; margin-top:8px;" onclick="dismissCheckin()">Remind Me Tomorrow</button>
+      </div>
+    </div>`;
+}
+function selectCheckin(el){
+  const key = el.dataset.k, val = el.dataset.v;
+  checkinSelections[key] = val;
+  document.querySelectorAll(`.choice-btn[data-k="${key}"]`).forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function dismissCheckin(){
+  state.lastPromptDate = todayStr();
+  save();
+  document.getElementById('checkinModalWrap').innerHTML = '';
+}
+function submitCheckin(){
+  if(!state.checkins) state.checkins = [];
+  state.checkins.push({
+    date: todayStr(),
+    energy: checkinSelections.energy || '–',
+    consistency: checkinSelections.consistency || '–',
+    win: document.getElementById('checkinWin').value.trim(),
+    struggle: document.getElementById('checkinStruggle').value.trim()
+  });
+  state.lastPromptDate = todayStr();
+  save();
+  document.getElementById('checkinModalWrap').innerHTML = '';
+  if(document.getElementById('view-insights').classList.contains('active')) renderCheckinHistory();
+}
+function renderCheckinHistory(){
+  const el = document.getElementById('checkinHistory');
+  const checkins = [...(state.checkins || [])].reverse();
+  if(!checkins.length){
+    el.innerHTML = `<div class="empty"><span class="big">○</span>No check-ins yet — the first one will pop up automatically once there's a few days of history.</div>`;
+    return;
+  }
+  el.innerHTML = checkins.map(c => `
+    <div class="checkin-row">
+      <div class="date">${new Date(c.date+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div>
+      <div>Energy: <b>${c.energy}</b> · Logging: <b>${c.consistency}</b></div>
+    </div>
+    ${c.win ? `<div class="log-entry" style="border:none; padding-top:0; font-size:12px; color:var(--muted);">Win: ${c.win}</div>` : ''}
+    ${c.struggle ? `<div class="log-entry" style="border:none; padding-top:0; font-size:12px; color:var(--muted);">In the way: ${c.struggle}</div>` : ''}
+  `).join('');
+}
+
+
+// ---------- Settings ----------
+function saveSettings(){
+  state.settings.calTarget = parseFloat(document.getElementById('setCalTarget').value) || 2200;
+  state.settings.startWeight = parseFloat(document.getElementById('setStartWeight').value) || 280;
+  state.settings.goalWeight = parseFloat(document.getElementById('setGoalWeight').value) || 220;
+  state.settings.age = parseFloat(document.getElementById('setAge').value) || null;
+  state.settings.height = parseFloat(document.getElementById('setHeight').value) || null;
+  state.settings.sex = document.getElementById('setSex').value;
+  state.settings.activity = parseFloat(document.getElementById('setActivity').value) || 1.375;
+  state.settings.macroTargets = {
+    p: parseFloat(document.getElementById('setMacroP').value) || 30,
+    c: parseFloat(document.getElementById('setMacroC').value) || 40,
+    f: parseFloat(document.getElementById('setMacroF').value) || 30
+  };
+  save();
+  renderDashboard();
+  alert('Targets saved.');
+}
+
+// ---------- Init ----------
+document.getElementById('todayDate').textContent = new Date().toLocaleDateString('en-US',{month:'short', day:'numeric'});
+document.getElementById('setCalTarget').value = state.settings.calTarget;
+document.getElementById('setStartWeight').value = state.settings.startWeight;
+document.getElementById('setGoalWeight').value = state.settings.goalWeight;
+if(state.settings.age) document.getElementById('setAge').value = state.settings.age;
+if(state.settings.height) document.getElementById('setHeight').value = state.settings.height;
+if(state.settings.sex) document.getElementById('setSex').value = state.settings.sex;
+if(state.settings.activity) document.getElementById('setActivity').value = state.settings.activity;
+if(state.settings.macroTargets){
+  document.getElementById('setMacroP').value = state.settings.macroTargets.p;
+  document.getElementById('setMacroC').value = state.settings.macroTargets.c;
+  document.getElementById('setMacroF').value = state.settings.macroTargets.f;
+}
+renderDashboard();
+maybeShowCheckin();
+</script>
+</body>
+</html>
